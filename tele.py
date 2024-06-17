@@ -238,6 +238,16 @@ def ask_if_heard_about_program(message):
 
     bot.send_message(chat_id, "Чи розповіли тобі про програму знижок?", reply_markup=markup)
 
+@bot.callback_query_handler(func=lambda call: call.data.startswith('heard_'))
+def heard_response(call):
+    chat_id = call.message.chat.id
+    heard = call.data.split('_')[1]
+    user_data[chat_id]['heard'] = heard
+
+    # Save feedback and send final thanks
+    save_feedback(chat_id)
+    send_final_thanks(chat_id)
+
 def ask_vitaminbomb_story(message):
     chat_id = message.chat.id
     user_data[chat_id]['extra_comment'] = message.text
